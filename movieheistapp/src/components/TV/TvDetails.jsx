@@ -16,7 +16,7 @@ const TvDetails = () => {
 
   const fetchMovie = async () => {
     const data = await fetch(
-      `${RootURL}/tv/${id}?api_key=${key}&language=en-US`
+      `${RootURL}/tv/${id}?api_key=${key}&language=en-US&include_adult=false`
     );
     const movie_detail = await data.json();
     setMoviedetail(movie_detail);
@@ -26,7 +26,7 @@ const TvDetails = () => {
 
   const fetchCast = async () => {
     const castdata = await fetch(
-      `${RootURL}/tv/${id}/credits?api_key=${key}&language`
+      `${RootURL}/tv/${id}/credits?api_key=${key}&language&include_adult=false`
     );
     const castdetail = await castdata.json();
     setCastdata(castdetail.cast);
@@ -40,7 +40,7 @@ const TvDetails = () => {
     );
     const videodata = await data.json();
     setVideo(videodata.results);
-    // console.log(videodata.results);
+    console.log(videodata.results);
   };
 
   useEffect(() => {
@@ -61,7 +61,7 @@ const TvDetails = () => {
       <div className="relative h-auto md:h-[82vh] flex justify-center">
       <div className=" absolute w-full h-[550px] lg:h-[850px] bg-gradient-to-r from-black/30" />
         <h1 className="text-white absolute bottom-0 p-10 text-2xl md:text-6xl font-bold text-center">
-          {moviedetail.title}
+          {moviedetail.name}
         </h1>
         {moviedetail.backdrop_path === null ? (
           <img src={""} className="h-full w-full object-cover" />
@@ -81,7 +81,7 @@ const TvDetails = () => {
 
       <div className="text-blue-100 font-semibold my-3 flex justify-center">
         <h2 className="bg-gray-600/30 border-2 border-red-700 py-2 px-3 rounded-full">
-          Release Date : {moviedetail.release_date}
+          Release Date : {moviedetail.first_air_date}
         </h2>
       </div>
       <div className="flex justify-center flex-wrap">
@@ -129,7 +129,7 @@ const TvDetails = () => {
 
       <div className="flex justify-center items-center mb-10 gap-5 flex-wrap">
         {Array.from(video)
-          .filter((trailer) => trailer.type === "Trailer")
+          .filter((trailer) => trailer.type === "Clip") //Trailer can be changed to Clip
           .map((trailer, index) => (
             <>
               <>
@@ -141,7 +141,7 @@ const TvDetails = () => {
                 >
                   <FaPlay />
                   Watch trailer{" "}
-                  {Array.from(video).filter((trailer) => trailer.type === "Trailer")
+                  {Array.from(video).filter((trailer) => trailer.type === "Clip")
                     .length > 1
                     ? index + 1
                     : ""}

@@ -93,14 +93,14 @@ const MovieDetails = () => {
 
 
   useEffect(() => {
-    const fetchData = async () => {
-      await fetchMovie();
-      await fetchCast();
-      await fetchVideo();
+    const fetchData = () => {
+      fetchMovie();
+      fetchCast();
+      fetchVideo();
     };
 
     fetchData();
-  }, [fetchMovie, fetchCast, fetchVideo]);
+  }, []);
 
   return (
     <>
