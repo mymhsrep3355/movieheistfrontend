@@ -7,6 +7,8 @@ import "react-lazy-load-image-component/src/effects/blur.css";
 import ReviewForm from "../ReviewForm";
 import slugify from "react-slugify";
 import { key, RootURL } from "../../utils/FetchMovies";
+import axios from "axios";
+
 
 const MovieDetails = () => {
   const { id } = useParams();
@@ -15,6 +17,7 @@ const MovieDetails = () => {
   const [castdata, setCastdata] = useState([]);
   const [moviegenres, setMoviegenres] = useState([]);
   const [video, setVideo] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const [showReviewModal, setShowReviewModal] = useState(false);
 
   const handleAuth = () => {
@@ -29,10 +32,39 @@ const MovieDetails = () => {
     handleAuth();
   }, [isLoggedIn]);
 
+  const fetchReviews = async () => {
+    try {
+
+      const token = localStorage.getItem("token"); // token in localStorage
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+
+      const response = await axios.get(
+        `http://localhost:7676/api/auth/reviews/${id}`,
+        { headers, withCredentials: true }
+      );
+      console.log(response.data);
+      const data = response.data();
+      if (response.ok) {
+        setReviews(data);
+      } else {
+        throw new Error(data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching reviews:", error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchReviews();
+  }, [id]);
+
   const fetchMovie = async () => {
     const data = await fetch(
       `${RootURL}/movie/${id}?api_key=${key}&language=en-US`
     );
+    // console.log(id);
     const movie_detail = await data.json();
     setMoviedetail(movie_detail);
     // console.log(moviedetail);
@@ -183,7 +215,7 @@ const MovieDetails = () => {
           </div>
         )}
       </div>
-        <h1 className="text-2xl text-slate-300 font-semibold text-center p-2 m-auto text-center" 
+        <h1 className="text-2xl text-slate-300 font-semibold text-center p-2 m-auto" 
         >
           POST REVIEW
         </h1>
@@ -203,52 +235,23 @@ const MovieDetails = () => {
           <ReviewForm
             onClose={() => setShowReviewModal(false)}
             onSubmit={handleReviewSubmit}
-            // movieName = {moviedetail.title}
+            movieName = {moviedetail.title}
           />
         )}
       </div>
-
-      {/* Review modal
-      <ReviewForm
-        show={showReviewModal}
-        onClose={() => setShowReviewModal(false)}
-        onSubmit={handleReviewSubmit}
-      />
-
-
-      {submittedReview && (
-        <div className="mt-5">
-          <textarea
-            value={reviewText}
-            onChange={(e) => setReviewText(e.target.value)}
-            rows={5}
-            className="w-full p-2 border border-gray-300 rounded"
-            placeholder="Write your review here..."
-          />
+      {reviews.length > 0 && (
+        <div className="flex justify-center items-center flex-wrap w-full">
+          {reviews.map((review, index) => (
+            <div className="flex justify-center items-center flex-wrap w-full" key={index}>
+              <p className="">{review.review}</p>
+            </div>
+          ))}
         </div>
-      )} */}
+      )}
     </>
   );
 };
 
 export default MovieDetails;
 
-{
-  /* <div
-        className="flex justify-center items-center mb-10 gap-5 flex-wrap"
-        onClick={() => setShowReviewModal(true)}
-      >
-        <button
-          className="flex fixed z-10 text-4xl text-white bg-blue-600 m-3 md:m-5 rounded-full cursor-pointer"
-          onClick={() => setShowReviewModal(true)}
-        >
-          Write Review
-        </button>
-      </div>
-      {showReviewModal && (
-        <ReviewForm
-          onClose={() => setShowReviewModal(false)}
-          onSubmit={handleReviewSubmit}
-        />
-      )} */
-}
+

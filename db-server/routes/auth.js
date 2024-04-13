@@ -133,26 +133,26 @@ router.post('/forgot-password', (req, res) => {
 //     res.status(500).json({ error: "Something went wrong" });
 //   }
 // });
-// const verifyToken = (req, res, next) => {
-//   const token = req.headers.authorization;
+const verifyToken = (req, res, next) => {
+  const token = req.headers.authorization;
 
-//   if (!token || !token.startsWith("Bearer ")) {
-//     return res.status(401).json({ error: "Unauthorized: No token provided" });
-//   }
+  if (!token || !token.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "Unauthorized: No token provided" });
+  }
 
-//   const tokenString = token.split(" ")[1]; // Extract the token part from "Bearer <token>"
+  const tokenString = token.split(" ")[1]; // Extract the token part from "Bearer <token>"
 
-//   jwt.verify(tokenString, JWT_SECRET, (err, decoded) => {
-//     if (err) {
-//       return res.status(401).json({ error: "Unauthorized: Invalid token" });
-//     }
+  jwt.verify(tokenString, JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: "Unauthorized: Invalid token" });
+    }
     
-//     req.user = decoded; // Attach decoded user information to request object
-//     next();
-//   });
-// };
+    req.user = decoded;
+    next();
+  });
+};
 
-router.post('/likes', async (req, res) => {
+router.post('/likes', verifyToken, async (req, res) => {
   try {
       const { likes } = req.body;
       
@@ -171,7 +171,7 @@ router.post('/likes', async (req, res) => {
   }
 });
 
-router.post('/addReview', async (req, res) => {
+router.post('/addReview', verifyToken, async (req, res) => {
     try {
         const { review, movie_id } = req.body;
         const userId = req.user.id;
@@ -193,12 +193,10 @@ router.post('/addReview', async (req, res) => {
     }
 });
 
-router.get('/reviews/:movie_id', async (req, res) => {
+router.get('/reviews/:movie_id', verifyToken, async (req, res) => {
   try {
       const { movie_id } = req.params;
       const reviews = await Review.find({ movieId: movie_id }).populate('userId', '-password');
-      // The '-password' argument is optional, it's used to exclude the password field from the user document
-
       res.status(200).json(reviews);
   } catch (error) {
       console.error(error);
