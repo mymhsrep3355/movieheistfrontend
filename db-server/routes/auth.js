@@ -65,16 +65,17 @@ router.post('/forgot-password', (req, res) => {
       const token = jwt.sign({id: user._id}, "jwt_secret_key", {expiresIn: "1h"})
       var transporter = nodemailer.createTransport({
           service: 'gmail',
-          auth: {
-            user: 'muhammadhamzasalahuddin@gmail.com',
-            pass: 'dbgxcosjzriodnbu'
+          auth:{
+            user: 'Movieheistsite@gmail.com',
+            pass: 'bdzo lktd ggvo oodi'
           }
+          
         });
         
         var mailOptions = {
           from: 'movieheist@info.com',
           to: req.body.email,
-          subject: 'Reset Password Link',
+          subject: 'Reset Password Link ',
           text: `http://localhost:3000/reset-password/${user._id}/${token}`
         };
         

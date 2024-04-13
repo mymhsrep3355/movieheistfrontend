@@ -235,7 +235,7 @@ const MovieDetails = () => {
           <ReviewForm
             onClose={() => setShowReviewModal(false)}
             onSubmit={handleReviewSubmit}
-            movieName = {moviedetail.title}
+            // movieName = {moviedetail.title}
           />
         )}
       </div>
@@ -253,5 +253,3 @@ const MovieDetails = () => {
 };
 
 export default MovieDetails;
-
-

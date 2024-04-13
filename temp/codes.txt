@@ -1,0 +1,4 @@
+auth: {
+            user: 'muhammadhamzasalahuddin@gmail.com',
+            pass: 'dbgxcosjzriodnbu'
+          }
