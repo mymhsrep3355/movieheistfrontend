@@ -2,9 +2,10 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const nodemailer = require('nodemailer');
 const { User } = require("../models/User-Model");
-const Mailjet = require("node-mailjet");
-const {Review}= require('../models/Review-Model')
+// const Mailjet = require("node-mailjet");
+const {Review} = require('../models/Review-Model')
 require("dotenv").config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -71,7 +72,7 @@ router.post('/forgot-password', (req, res) => {
         });
         
         var mailOptions = {
-          from: 'muhammadhamzasalahuddin@gmail.com',
+          from: 'movieheist@info.com',
           to: req.body.email,
           subject: 'Reset Password Link',
           text: `http://localhost:3000/reset-password/${user._id}/${token}`
@@ -86,53 +87,25 @@ router.post('/forgot-password', (req, res) => {
         });
   })
 })
-// router.post("/forget_password", async (req, res) => {
-//   try {
-//     // Generate 5-digit random OTP
-//     const otp = Math.floor(10000 + Math.random() * 90000);
 
-//     // Send OTP via email
-//     const mailjet = new Mailjet({
-//       apiKey: "",
-//       apiSecret: ""
-//     });
+router.post('/reset-password/:id/:token', (req, res) => {
+  const {id, token} = req.params
+  const {password} = req.body
 
-//     const request = mailjet.post("send", { version: "v3.1" }).request({
-//       Messages: [
-//         {
-//           From: {
-//             Email: "arsalanbashir831@gmail.com",
-//             Name: "Arsalan Bashir"
-//           },
-//           To: [
-//             {
-//               Email: req.body.email,
-//               Name: "Recipient Name"
-//             }
-//           ],
-//           Subject: "OTP",
-//           TextPart: `Your OTP is: ${otp}`,
-//           HTMLPart: `<h3>Your OTP is: ${otp}</h3>`
-//         }
-//       ]
-//     });
-
-//     // Save OTP to the user collection for verification
-//     await User.findOneAndUpdate({ email: req.body.email }, { $set: { otp: otp } }, { new: true });
-
-//     // Send the request
-//     const result = await request;
-
-//     // Log the result
-//     console.log(result.body);
-
-//     // Send response to client
-//     res.status(200).json({ message: "OTP sent successfully" });
-//   } catch (error) {
-//     console.error("Error sending OTP:", error);
-//     res.status(500).json({ error: "Something went wrong" });
-//   }
-// });
+  jwt.verify(token, "jwt_secret_key", (err, decoded) => {
+      if(err) {
+          return res.json({Status: "Error with token"})
+      } else {
+          bcrypt.hash(password, 10)
+          .then(hash => {
+              User.findByIdAndUpdate({_id: id}, {password: hash})
+              .then(u => res.send({Status: "Success"}))
+              .catch(err => res.send({Status: err}))
+          })
+          .catch(err => res.send({Status: err}))
+      }
+  })
+})
 const verifyToken = (req, res, next) => {
   const token = req.headers.authorization;
 

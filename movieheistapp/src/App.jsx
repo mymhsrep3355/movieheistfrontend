@@ -33,7 +33,7 @@ const App = () => {
             <Route path="/tv" element={<TVshows></TVshows>} />
             <Route path="/tv-details/:id" element={<TvDetails></TvDetails>}/>
             <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/reset-password/:id/:token" element={<ResetPassword />} />
             <Route path="/preference" element={<Genres></Genres>}></Route>
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/recommended" element={<Recommendations />} />
