@@ -40,7 +40,7 @@ const TvDetails = () => {
     );
     const videodata = await data.json();
     setVideo(videodata.results);
-    console.log(videodata.results);
+    // console.log(videodata.results);
   };
 
   useEffect(() => {
@@ -129,7 +129,7 @@ const TvDetails = () => {
 
       <div className="flex justify-center items-center mb-10 gap-5 flex-wrap">
         {Array.from(video)
-          .filter((trailer) => trailer.type === "Clip") //Trailer can be changed to Clip
+          .filter((trailer) => trailer.type === "Clip" || trailer.type ==="Trailer") //Trailer can be changed to Clip
           .map((trailer, index) => (
             <>
               <>
@@ -141,7 +141,7 @@ const TvDetails = () => {
                 >
                   <FaPlay />
                   Watch trailer{" "}
-                  {Array.from(video).filter((trailer) => trailer.type === "Clip")
+                  {Array.from(video).filter((trailer) => trailer.type === "Clip"  || trailer.type ==="Trailer")
                     .length > 1
                     ? index + 1
                     : ""}
