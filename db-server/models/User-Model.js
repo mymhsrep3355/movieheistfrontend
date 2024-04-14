@@ -9,7 +9,8 @@ const userSchema = new mongoose.Schema({
     },
     password: {type: String, required: true, max: 50},
     // preferences: {type: Array, required: true, max: 50},
-    preferences: { type: [String], default: [] },
+    // preferences: { type: [String], default: [] },
+    preferences: { type: Array, default: [] },
     // otp:String,
     likedMovies:[Number],
     // reviews: Array

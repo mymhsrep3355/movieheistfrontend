@@ -128,7 +128,7 @@ const TvDetails = () => {
       </div>
 
       <div className="flex justify-center items-center mb-10 gap-5 flex-wrap">
-        {Array.from(video)
+        {/* {Array.from(video)
           .filter((trailer) => trailer.type === "Clip" || trailer.type ==="Trailer") //Trailer can be changed to Clip
           .map((trailer, index) => (
             <>
@@ -148,7 +148,18 @@ const TvDetails = () => {
                 </a>
               </>
             </>
-          ))}
+          ))} */}
+          {video.length > 0 ? (
+          video.filter(trailer => trailer.type === "Clip" || trailer.type === "Trailer").map((trailer, index) => (
+            <a key={trailer.id} href={`https://www.youtube.com/watch?v=${trailer.key}`} target="_blank" rel="noopener noreferrer"
+               className="flex border-2 border-red-600 bg-red-600 p-3 items-center justify-center gap-2 text-xl font-semibold rounded-full text-white">
+              <FaPlay />
+              Watch trailer {video.length > 1 ? index + 1 : ""}
+            </a>
+          ))
+        ) : (
+          <h2 className="text-xl font-semibold text-white">No trailer available</h2>
+        )}
       </div>
     </>
   );
