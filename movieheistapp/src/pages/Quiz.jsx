@@ -129,7 +129,10 @@ const handleScore = (score) => {
 
     const isLastQuestion = currentQuestion + 1 === quizData.questions.length;
 
-    
+    const handleCopy =(e)=>{
+      e.preventDefault(); // Prevent default copy behavior
+      alert('Copying text is disabled.');
+    }
     return (
       <Card
         title={`Question ${currentQuestion + 1}`}
@@ -137,8 +140,9 @@ const handleScore = (score) => {
         style={{ maxWidth: 400 }}
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0, transition: { duration: 0.5 } }}
+        onCopy={handleCopy}
       >
-        <motion.p className="text-lg text-white">{question}</motion.p>
+        <motion.p className="text-lg text-white disable_copy">{question}</motion.p>
         <Radio.Group onChange={handleRadioChange} value={selectedAnswer}>
           {Object.entries(options).map(([optionKey, optionText]) => (
             <Radio

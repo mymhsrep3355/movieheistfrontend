@@ -50,3 +50,6 @@ body {
 .align-center {
   align-items: center;
 }
+.disable_copy{
+  user-select: none;
+}
