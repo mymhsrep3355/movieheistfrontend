@@ -144,6 +144,8 @@ router.post('/likes', verifyToken, async (req, res) => {
   }
 });
 
+
+// to post a review
 router.post('/addReview', verifyToken, async (req, res) => {
     try {
         const { review, movie_id } = req.body;
@@ -153,7 +155,8 @@ router.post('/addReview', verifyToken, async (req, res) => {
         const newReview = new Review({
             userId: userId,
             movieId: movie_id,
-            review: review
+            review: review,
+            // sentiment: sentiment
         });
 
         // Save the new review to the database
@@ -166,11 +169,52 @@ router.post('/addReview', verifyToken, async (req, res) => {
     }
 });
 
+// Get reviews for a movie
 router.get('/reviews/:movie_id', verifyToken, async (req, res) => {
   try {
       const { movie_id } = req.params;
       const reviews = await Review.find({ movieId: movie_id }).populate('userId', '-password');
       res.status(200).json(reviews);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+// to get user reviews
+router.get('/reviews', verifyToken, async (req, res) => {
+  try {
+      const userId = req.user.id;
+
+      const reviews = await Review.find({ userId: userId }).populate('movieId', 'title -_id');
+
+      if (reviews.length === 0) {
+          return res.status(404).json({ message: 'No reviews found for this user.' });
+      }
+
+      res.status(200).json(reviews);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+
+// Delete a review
+router.delete('/review/:reviewId', verifyToken, async (req, res) => {
+  try {
+      const userId = req.user.id; 
+      const reviewId = req.params.reviewId; 
+      const review = await Review.findById(reviewId);
+      if (!review) {
+          return res.status(404).json({ message: 'Review not found.' });
+      }
+      if (review.userId.toString() !== userId) {
+          return res.status(403).json({ message: 'You can only delete your own reviews.' });
+      }
+
+      await Review.deleteOne({ _id: reviewId });
+      res.status(200).json({ message: 'Review deleted successfully.' });
   } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Internal Server Error' });

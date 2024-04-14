@@ -19,11 +19,12 @@ const MovieDetails = () => {
   const [video, setVideo] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [showReviewModal, setShowReviewModal] = useState(false);
-
+  const [moviename, setMoviename] = useState("");
   const handleAuth = () => {
     const token = localStorage.getItem("token");
     if (token) {
       setIsLoggedIn(true);
+      console.log(token);
     } else {
       setIsLoggedIn(false);
     }
@@ -67,7 +68,8 @@ const MovieDetails = () => {
     // console.log(id);
     const movie_detail = await data.json();
     setMoviedetail(movie_detail);
-    // console.log(moviedetail);
+     console.log(movie_detail);
+     setMoviename(movie_detail.title);
     setMoviegenres(movie_detail.genres);
   };
   const fetchCast = async () => {
@@ -222,22 +224,20 @@ const MovieDetails = () => {
       <div className="flex justify-center items-center flex-wrap w-full">
         <div
           className="flex justify-center items-center mb-10 gap-5 flex-wrap p-6"
-          onClick={() => setShowReviewModal(true)}
         >
           <button
             className="flex text-1xl p-5 text-white bg-red-600 m-3 md:m-5 rounded-full cursor-pointer"
-            onClick={() => setShowReviewModal(true)}
           >
             Write Review
           </button>
         </div>
-        {showReviewModal && (
+        {/* {showReviewModal && (
           <ReviewForm
             onClose={() => setShowReviewModal(false)}
             onSubmit={handleReviewSubmit}
-            // movieName = {moviedetail.title}
+            movieName = {moviename}
           />
-        )}
+        )} */}
       </div>
       {reviews.length > 0 && (
         <div className="flex justify-center items-center flex-wrap w-full">
