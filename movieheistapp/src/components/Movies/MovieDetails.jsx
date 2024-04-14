@@ -10,9 +10,9 @@ import { key, RootURL } from "../../utils/FetchMovies";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-
 const MovieDetails = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
   const { id } = useParams();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [moviedetail, setMoviedetail] = useState([]);
@@ -37,7 +37,6 @@ const MovieDetails = () => {
 
   const fetchReviews = async () => {
     try {
-
       const token = localStorage.getItem("token"); // token in localStorage
       const headers = {
         Authorization: `Bearer ${token}`,
@@ -70,9 +69,13 @@ const MovieDetails = () => {
     // console.log(id);
     const movie_detail = await data.json();
     setMoviedetail(movie_detail);
-     console.log(movie_detail);
-     setMoviename(movie_detail.title);
+    // console.log(movie_detail);
+    console.log(moviedetail);
+    console.log(moviedetail.id);
+    setMoviename(movie_detail.title);
     setMoviegenres(movie_detail.genres);
+    // console.log(moviedetail.id);
+
   };
   const fetchCast = async () => {
     const castdata = await fetch(
@@ -94,7 +97,6 @@ const MovieDetails = () => {
     console.log(reviewData);
     setShowReviewModal(false);
   };
-
 
   useEffect(() => {
     const fetchData = () => {
@@ -219,16 +221,20 @@ const MovieDetails = () => {
           </div>
         )}
       </div>
-        <h1 className="text-2xl text-slate-300 font-semibold text-center p-2 m-auto" 
-        >
-          POST REVIEW
-        </h1>
+      <h1 className="text-2xl text-slate-300 font-semibold text-center p-2 m-auto">
+        POST REVIEW
+      </h1>
       <div className="flex justify-center items-center flex-wrap w-full">
-        <div
-          className="flex justify-center items-center mb-10 gap-5 flex-wrap p-6"
-        >
-          <button 
-          onClick={()=> navigate('/Quiz',{state:{movie:moviedetail.title}})}
+        <div className="flex justify-center items-center mb-10 gap-5 flex-wrap p-6">
+          <button
+            onClick={() =>
+              navigate("/Quiz", {
+                state: {
+                  movie: moviedetail.title,
+                  id : moviedetail.id
+                },
+              })
+            }
             className="flex text-1xl p-5 text-white bg-red-600 m-3 md:m-5 rounded-full cursor-pointer"
           >
             Write Review
@@ -245,7 +251,10 @@ const MovieDetails = () => {
       {reviews.length > 0 && (
         <div className="flex justify-center items-center flex-wrap w-full">
           {reviews.map((review, index) => (
-            <div className="flex justify-center items-center flex-wrap w-full" key={index}>
+            <div
+              className="flex justify-center items-center flex-wrap w-full"
+              key={index}
+            >
               <p className="">{review.review}</p>
             </div>
           ))}

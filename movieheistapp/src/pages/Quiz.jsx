@@ -1,36 +1,52 @@
-import React, { useState, useEffect } from 'react';
-import { Radio, Button, Card, Modal, Input } from 'antd';
-import { motion } from 'framer-motion';
-import { Link, useLocation } from 'react-router-dom';
-import { HiChevronLeft } from 'react-icons/hi';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { Radio, Button, Card, Modal, Input } from "antd";
+import { motion } from "framer-motion";
+import { Link, useLocation, useParams, useNavigate } from "react-router-dom";
+import { HiChevronLeft } from "react-icons/hi";
+import axios from "axios";
 
 const Quiz = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false);
   const [quizData, setQuizData] = useState(null);
-  const { movie } = location.state;
-  const [reviewText, setReviewText] = useState('');
+  const { movie, id } = location.state;
+  //   const {id} = useParams();
+  const [reviewText, setReviewText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [sentiment, setReviwSentiment] = useState("");
+
+  //   console.log(movie);
+  //   console.log(id);
 
   useEffect(() => {
     const fetchQuizData = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:5000/questions?name=${movie}`);
-        console.log(response.data);
+        const response = await axios.get(
+          `http://127.0.0.1:5000/questions?name=${movie}`
+        );
+         console.log(response.data);
         setQuizData(response.data);
       } catch (error) {
-        console.error('Error fetching quiz data:', error);
+        console.error("Error fetching quiz data:", error);
         // Handle error (e.g., display an error message)
       }
     };
 
     fetchQuizData();
   }, [movie]);
-
+  
+const handleScore = (score) => {
+   
+      if (score > 3) {
+        setIsModalVisible(true);
+      } else {
+        navigate("/");
+      }
+    };
   const handleNextQuestion = () => {
     if (!quizData) return; // Ensure quizData is loaded
 
@@ -49,13 +65,54 @@ const Quiz = () => {
     }
   };
 
-  const handleReviewSubmission = () => {
-    // Implement logic to submit review (e.g., send to backend)
-    console.log('Submitted review:', reviewText);
-    // Clear review text
-    setReviewText('');
-    // Close the modal
+  const getSentiments = async ()=>{
+    try {
+        const response = await axios.post('http://127.0.0.1:5000/sentiments',{
+            review:reviewText
+        })
+        setReviwSentiment(response.data)
+        console.log(response.data);
+    } catch (error) {
+        console.log(error);
+    }
+  }
+  const handleReviewSubmission = async () => {
     setIsModalVisible(false);
+    try {
+      const token = localStorage.getItem("token"); // token in localStorage
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+      console.log(token);
+      const sentimentResponse = await axios.post('http://127.0.0.1:5000/sentiments',{
+        review:reviewText
+    })
+    console.log(sentimentResponse.data);
+
+    if (sentimentResponse) {
+        const response = await axios.post(
+            "http://localhost:7676/api/auth/addReview",
+            {
+              review: reviewText,
+              movie_id: id,
+              score: score,
+              sentiment: sentimentResponse.data.sentiment,
+            },
+            { headers, withCredentials: true }
+          );
+           
+      console.log(response.data); // Check the response from the backend
+      const data = await response.json();
+      console.log("Submitted review:", reviewText);
+      setReviewText("");
+    }
+     
+  
+    } catch (error) {
+      console.error("Error adding review:", error.message);
+    }
+    // Clear review text
+    // Close the modal
   };
 
   const renderQuizContent = () => {
@@ -72,6 +129,7 @@ const Quiz = () => {
 
     const isLastQuestion = currentQuestion + 1 === quizData.questions.length;
 
+    
     return (
       <Card
         title={`Question ${currentQuestion + 1}`}
@@ -83,7 +141,11 @@ const Quiz = () => {
         <motion.p className="text-lg text-white">{question}</motion.p>
         <Radio.Group onChange={handleRadioChange} value={selectedAnswer}>
           {Object.entries(options).map(([optionKey, optionText]) => (
-            <Radio key={optionKey} value={optionKey} className="block my-2 text-white">
+            <Radio
+              key={optionKey}
+              value={optionKey}
+              className="block my-2 text-white"
+            >
               {optionText}
             </Radio>
           ))}
@@ -92,29 +154,32 @@ const Quiz = () => {
           type="primary"
           className="mt-4"
           onClick={handleNextQuestion}
-          style={{ backgroundColor: '#E50914', borderColor: '#E50914' }}
+          style={{ backgroundColor: "#E50914", borderColor: "#E50914" }}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          {isLastQuestion ? 'Finish' : 'Next'}
+          {isLastQuestion ? "Finish" : "Next"}
         </Button>
-        {showScore && (
+        {/* {showScore && (
           <Button
             type="primary"
             className="mt-4"
-            onClick={() => setIsModalVisible(true)}
-            style={{ backgroundColor: '#E50914', borderColor: '#E50914' }}
+            onClick={() => handleScore(score)}
+            style={{ backgroundColor: "#E50914", borderColor: "#E50914" }}
           >
-            {score > 3 ? 'Post Review' : 'Give Retake'}
+            {score > 3 ? "Post Review" : "Give Retake"}
           </Button>
-        )}
+        )} */}
       </Card>
     );
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black flex-col">
-      <Link to="/movies" className="fixed z-10 top-5 left-5 text-4xl text-white bg-red-600 rounded-full p-2">
+      <Link
+        to="/movies"
+        className="fixed z-10 top-5 left-5 text-4xl text-white bg-red-600 rounded-full p-2"
+      >
         <HiChevronLeft />
       </Link>
       <div className="max-w-md w-full">
@@ -122,11 +187,10 @@ const Quiz = () => {
         {showScore ? (
           <Button
             type="primary"
-            onClick={() => setIsModalVisible(true)}
-            style={{ backgroundColor: '#E50914', borderColor: '#E50914' }}
+            onClick={() => handleScore(score)}
+            style={{ backgroundColor: "#E50914", borderColor: "#E50914" }}
           >
-          your score is {score}
-            {score > 3 ? 'Post Review' : 'Give Retake'}
+            your score is {score} : {score > 3 ? "Post Review" : "Give Retake"}
           </Button>
         ) : (
           renderQuizContent()
