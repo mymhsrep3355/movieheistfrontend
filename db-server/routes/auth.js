@@ -172,7 +172,7 @@ router.post('/addReview', verifyToken, async (req, res) => {
 
 
 // Get reviews for a movie
-router.get('/reviews/:movie_id', verifyToken, async (req, res) => {
+router.get('/reviews/:movie_id', async (req, res) => {
   try {
       const { movie_id } = req.params;
       const reviews = await Review.find({ movieId: movie_id }).populate('userId', '-password');

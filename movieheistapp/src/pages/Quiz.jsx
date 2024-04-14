@@ -111,8 +111,6 @@ const handleScore = (score) => {
     } catch (error) {
       console.error("Error adding review:", error.message);
     }
-    // Clear review text
-    // Close the modal
   };
 
   const renderQuizContent = () => {

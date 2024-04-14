@@ -9,10 +9,10 @@ const MovieReviews = ({ id }) => {
   useEffect(() => {
     const fetchReviews = async () => {
       const token = localStorage.getItem("token");
-      if (!token) {
-        message.error("You must be logged in to see reviews");
-        return;
-      }
+    //   if (!token) {
+    //     message.error("You must be logged in to see reviews");
+    //     return;
+    //   }
 
       const headers = {
         Authorization: `Bearer ${token}`,
@@ -20,10 +20,11 @@ const MovieReviews = ({ id }) => {
       };
 
       try {
-        const response = await axios.get(`http://localhost:7676/api/auth/reviews/${id}`, {
-          headers,
-          withCredentials: true
-        });
+        const response = await axios.get(`http://localhost:7676/api/auth/reviews/${id}`)
+        // , {
+        //   headers,
+        //   withCredentials: true
+        // });
 
         if (response.status === 200) {
           setReviews(response.data);
