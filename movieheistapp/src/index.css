@@ -25,10 +25,12 @@ body {
   overflow-x: hidden;
 }
 
-body::-webkit-scrollbar {
+/* body::-webkit-scrollbar {
   display: none;
+} */
+.ant-card-head-title{
+  color: white !important;
 }
-
 .flex {
   display: flex;
 }

@@ -8,9 +8,11 @@ import ReviewForm from "../ReviewForm";
 import slugify from "react-slugify";
 import { key, RootURL } from "../../utils/FetchMovies";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 
 const MovieDetails = () => {
+  const navigate = useNavigate()
   const { id } = useParams();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [moviedetail, setMoviedetail] = useState([]);
@@ -225,7 +227,8 @@ const MovieDetails = () => {
         <div
           className="flex justify-center items-center mb-10 gap-5 flex-wrap p-6"
         >
-          <button
+          <button 
+          onClick={()=> navigate('/Quiz',{state:{movie:moviedetail.title}})}
             className="flex text-1xl p-5 text-white bg-red-600 m-3 md:m-5 rounded-full cursor-pointer"
           >
             Write Review

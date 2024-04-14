@@ -18,6 +18,7 @@ import SearchPage from "./pages/SearchPage.jsx";
 import Favorites from "./pages/Favorites.jsx";
 import MoviePlayer from "./pages/MoviePlayer.jsx";
 import ResetPassword from "./components/ResetPassword.jsx";
+import Quiz from "./pages/Quiz.jsx";
 
 const App = () => {
   return (
@@ -42,6 +43,7 @@ const App = () => {
             <Route path="/search" element={<SearchPage></SearchPage>}></Route>
             <Route path="/player/:id/:title" element={<MoviePlayer />} />
             <Route path="/movie-player/:id" element={<MoviePlayer></MoviePlayer>}></Route>
+            <Route path="/Quiz" element={<Quiz/>}></Route>
           </Routes>
         }
       ></DataProvider>
