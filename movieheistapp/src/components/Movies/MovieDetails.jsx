@@ -9,6 +9,7 @@ import slugify from "react-slugify";
 import { key, RootURL } from "../../utils/FetchMovies";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import MovieReviews from "../MovieReviews";
 
 const MovieDetails = () => {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ const MovieDetails = () => {
   const [reviews, setReviews] = useState([]);
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [moviename, setMoviename] = useState("");
+
   const handleAuth = () => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -36,6 +38,7 @@ const MovieDetails = () => {
   }, [isLoggedIn]);
 
   const fetchReviews = async () => {
+    console.log(id);
     try {
       const token = localStorage.getItem("token"); // token in localStorage
       const headers = {
@@ -46,8 +49,9 @@ const MovieDetails = () => {
         `http://localhost:7676/api/auth/reviews/${id}`,
         { headers, withCredentials: true }
       );
-      console.log(response.data);
-      const data = response.data();
+      console.log(response);
+      const data = response?.data;
+
       if (response.ok) {
         setReviews(data);
       } else {
@@ -224,42 +228,39 @@ const MovieDetails = () => {
       <h1 className="text-2xl text-slate-300 font-semibold text-center p-2 m-auto">
         POST REVIEW
       </h1>
-      <div className="flex justify-center items-center flex-wrap w-full">
-        <div className="flex justify-center items-center mb-10 gap-5 flex-wrap p-6">
-          <button
-            onClick={() =>
-              navigate("/Quiz", {
-                state: {
-                  movie: moviedetail.title,
-                  id : moviedetail.id
-                },
-              })
-            }
-            className="flex text-1xl p-5 text-white bg-red-600 m-3 md:m-5 rounded-full cursor-pointer"
-          >
-            Write Review
-          </button>
-        </div>
-        {/* {showReviewModal && (
-          <ReviewForm
-            onClose={() => setShowReviewModal(false)}
-            onSubmit={handleReviewSubmit}
-            movieName = {moviename}
-          />
-        )} */}
-      </div>
-      {reviews.length > 0 && (
+      <>
+      {isLoggedIn ? (
         <div className="flex justify-center items-center flex-wrap w-full">
-          {reviews.map((review, index) => (
-            <div
-              className="flex justify-center items-center flex-wrap w-full"
-              key={index}
+          <div className="flex justify-center items-center mb-10 gap-5 flex-wrap p-6">
+            <button
+              onClick={() =>
+                navigate("/Quiz", {
+                  state: {
+                    movie: moviedetail.title,
+                    id: moviedetail.id,
+                  },
+                })
+              }
+              className="flex text-1xl p-5 text-white bg-red-600 m-3 md:m-5 rounded-full cursor-pointer"
             >
-              <p className="">{review.review}</p>
-            </div>
-          ))}
+              Write Review
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="flex justify-center items-center flex-wrap w-full">
+          <div className="flex justify-center items-center mb-10 gap-5 flex-wrap p-6">
+            <button
+              onClick={() => navigate("/login")}
+              className="flex text-1xl p-5 text-white bg-red-600 m-3 md:m-5 rounded-full cursor-pointer"
+            >
+              Login to write review
+            </button>
+          </div>
         </div>
       )}
+      <MovieReviews id={id} />
+    </>
     </>
   );
 };

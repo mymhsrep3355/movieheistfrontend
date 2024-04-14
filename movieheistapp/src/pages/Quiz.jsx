@@ -160,16 +160,6 @@ const handleScore = (score) => {
         >
           {isLastQuestion ? "Finish" : "Next"}
         </Button>
-        {/* {showScore && (
-          <Button
-            type="primary"
-            className="mt-4"
-            onClick={() => handleScore(score)}
-            style={{ backgroundColor: "#E50914", borderColor: "#E50914" }}
-          >
-            {score > 3 ? "Post Review" : "Give Retake"}
-          </Button>
-        )} */}
       </Card>
     );
   };

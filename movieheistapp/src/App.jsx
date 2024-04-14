@@ -19,6 +19,7 @@ import Favorites from "./pages/Favorites.jsx";
 import MoviePlayer from "./pages/MoviePlayer.jsx";
 import ResetPassword from "./components/ResetPassword.jsx";
 import Quiz from "./pages/Quiz.jsx";
+import Reviews from "./pages/Reviews.jsx";
 
 const App = () => {
   return (
@@ -37,6 +38,7 @@ const App = () => {
             <Route path="/reset-password/:id/:token" element={<ResetPassword />} />
             <Route path="/preference" element={<Genres></Genres>}></Route>
             <Route path="/favorites" element={<Favorites />} />
+            <Route path="/reviews" element={<Reviews />} />
             <Route path="/recommended" element={<Recommendations />} />
             <Route path="/help" element={<Help></Help>}></Route>
             <Route path="/search/:search" element={<SearchPage></SearchPage>}></Route>
