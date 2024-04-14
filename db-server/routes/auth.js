@@ -147,27 +147,29 @@ router.post('/likes', verifyToken, async (req, res) => {
 
 // to post a review
 router.post('/addReview', verifyToken, async (req, res) => {
-    try {
-        const { review, movie_id } = req.body;
-        const userId = req.user.id;
+  try {
+      const { review, movie_id, sentiment, score } = req.body;  // Updated to receive new fields
+      const userId = req.user.id;
 
-        // Create a new review document
-        const newReview = new Review({
-            userId: userId,
-            movieId: movie_id,
-            review: review,
-            // sentiment: sentiment
-        });
+      // Create a new review document including the new fields
+      const newReview = new Review({
+          userId: userId,
+          movieId: movie_id,
+          review: review,
+          sentiment: sentiment, // now storing sentiment
+          score: score         // now storing score
+      });
 
-        // Save the new review to the database
-        const savedReview = await newReview.save();
+      // Save the new review to the database
+      const savedReview = await newReview.save();
 
-        res.status(201).json({ message: 'Review added successfully', review: savedReview });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal Server Error' });
-    }
+      res.status(201).json({ message: 'Review added successfully', review: savedReview });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal Server Error' });
+  }
 });
+
 
 // Get reviews for a movie
 router.get('/reviews/:movie_id', verifyToken, async (req, res) => {

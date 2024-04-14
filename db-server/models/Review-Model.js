@@ -10,12 +10,16 @@ const ReviewSchema = new mongoose.Schema({
         type : Number, 
         required:true
     },
-    // sentiment:{
-    //     type: String,
-    //     required: true
-    // },
+    sentiment:{
+        type: String,
+        required: true
+    },
     review: {
         type: String,
+        required: true
+    },
+    score: {
+        type: Number,
         required: true
     }
 });
