@@ -183,6 +183,7 @@ router.get('/reviews/:movie_id', async (req, res) => {
   }
 });
 
+
 // to get user reviews
 router.get('/reviews', verifyToken, async (req, res) => {
   try {

@@ -36,8 +36,11 @@ const Quiz = () => {
       }
     };
 
-    fetchQuizData();
-  }, [movie]);
+    if(movie){
+      fetchQuizData();
+    }
+
+  }, []);
   
 const handleScore = (score) => {
    

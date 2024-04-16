@@ -8,6 +8,7 @@ import AppHeader from "../components/AppHeader";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
+import { SiSuperuser } from "react-icons/si";
 // import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 const Login = () => {
@@ -38,6 +39,11 @@ const Login = () => {
       toast.error("Invalid email or password");
     }
   };
+
+
+  const guestUser = () =>{
+    navigate("/");
+  }
 
   // onAuthStateChanged(firebaseAuth, (user) => {
   //   if (user) navigate("/");
@@ -107,9 +113,9 @@ const Login = () => {
                   </span>
                   <Link to="/signup">Sign Up</Link>
                 </p>
-                {/* <button type="button" onClick={handleGoogleSignIn} className=" flex justify-center items-center bg-red-700 py-3 my-6 font-sans">
-                  <FaGoogle className=" mr-2"></FaGoogle>Sign In With Google
-                </button> */}
+                <button type="button" onClick={guestUser} className=" flex justify-center items-center bg-red-700 py-3 my-6 font-sans">
+                  <SiSuperuser className=" mr-2"></SiSuperuser>Try as Guest
+                </button>
               </form>
             </div>
           </div>

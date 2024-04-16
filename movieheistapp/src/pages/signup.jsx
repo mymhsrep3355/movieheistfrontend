@@ -15,6 +15,7 @@ import axios from "axios";
 // } from "firebase/auth";
 // import { getDatabase, ref, set } from "firebase/database";
 import AppHeader from "../components/AppHeader";
+import { SiSuperuser } from "react-icons/si";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -32,6 +33,10 @@ const Signup = () => {
       [name]: value,
     }));
   };
+
+  const guestUser = () =>{
+    navigate("/");
+  }
 
   // const handleGoogleSignIn = async () => {
   //   try {
@@ -110,13 +115,13 @@ const Signup = () => {
                   </span>
                   <Link to="/login">Sign In</Link>
                 </p>
-                {/* <button
+                <button
                   type="button"
-                  onClick={handleGoogleSignIn}
+                  onClick={guestUser}
                   className=" flex justify-center items-center bg-red-700 py-3 my-6 font-sans"
                 >
-                  <FaGoogle className=" mr-2"></FaGoogle>Sign Up With Google
-                </button> */}
+                  <SiSuperuser className=" mr-2"></SiSuperuser>Try as Guest
+                </button>
               </form>
             </div>
           </div>
